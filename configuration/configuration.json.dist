@@ -1,0 +1,13 @@
+{
+    "mysql":{
+        "user":"",
+        "password":"",
+        "host":"",
+        "port":"",
+        "database":"",
+        "charset":""
+    },
+    "api":{
+        "TODO":"TODO"
+    }
+}
