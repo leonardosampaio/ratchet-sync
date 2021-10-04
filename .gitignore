@@ -1,6 +1,8 @@
+.env
 configuration.json
 vendor
 *.zip
 *.txt
 test
 *.log
+.vscode

@@ -7,53 +7,160 @@ use PDO;
 class Persistence {
     
     private $pdo;
+    private $config;
+    private $nextTryInSeconds;
 
-    public function __construct() {
+    public function __construct($mysqlConfig) {
+        $this->nextTryInSeconds = 5;
+        $this->config = $mysqlConfig;
         $this->getConnection();
     }
 
     public function getConnection()
     {
-        $configurationPath = __DIR__.'/../configuration/configuration.json';
-        if (!file_exists($configurationPath))
-        {
-            die('Configuration file '.
-                __DIR__.'/../configuration/configuration.json not found');
-        }
-        $config = json_decode(file_get_contents($configurationPath))->mysql;
-        
-        $dsn = "mysql:host=$config->host;port=$config->port;dbname=$config->database;charset=$config->charset";
+        $dsn =
+            "mysql:host=".$this->config->host.";port=".$this->config->port.";dbname=".$this->config->database.";charset=".$this->config->charset;
         $options = [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES   => false,
         ];
         try {
-             $this->pdo = new PDO($dsn, $config->user, $config->password, $options);
+             $this->pdo = new PDO($dsn, $this->config->user, $this->config->password, $options);
         } catch (\Exception $e) {
             Logger::getInstance()->log('PDO error: ' . json_encode($e));
         }
     }
 
-    public function saveDataUpDto($msg)
+    public function saveDataUpDto($msgJsonStr, $receivedIn)
     {
-        if (!$this->pdo)
-        {
-            //try again in 5 seconds
-            sleep(5);
-            $this->getConnection();
+        try {
 
-            if (!$this->pdo)
+            while(!$this->pdo)
             {
-                Logger::getInstance()->log(
-                    '[Persistence::saveDataUpDto] Invalid PDO instance obtained, ignoring insert of ' . 
-                    json_encode($msg));
-                return false;
-            }
-        }
+                sleep($this->nextTryInSeconds);
+                
+                if ($this->nextTryInSeconds <= 60)
+                {
+                    $this->nextTryInSeconds+=5;
+                }
 
-        $sql = "INSERT INTO TODO_TABLE VALUES TODO_COLUMNS=?";
-        $stmt= $this->pdo->prepare($sql);
-        return $stmt->execute([$msg]);
+                $this->getConnection();
+    
+                if (!$this->pdo)
+                {
+                    Logger::getInstance()->log(
+                        '[Persistence::saveDataUpDto] Invalid PDO instance obtained, ignoring insert of ' . 
+                        json_encode($msgJsonStr));
+                    Logger::getInstance()->log(
+                        '[Persistence::saveDataUpDto] Trying again in '.$this->nextTryInSeconds.' seconds');    
+                }
+            }
+    
+            $this->pdo->beginTransaction();
+    
+            $message = json_decode($msgJsonStr, false, 512, JSON_THROW_ON_ERROR);
+    
+            $sqlDataUpDto = "INSERT INTO ".$this->config->database.".DataUpDto
+                    (
+                        message_id,
+                        endDevice_devEui,
+                        endDevice_devAddr,
+                        endDevice_cluster_id,
+                        fCntDown,
+                        fCntUp,
+                        adr,
+                        confirmed,
+                        encrypted,
+                        payload,
+                        encodingType,
+                        recvTime,
+                        gwRecvTime,
+                        `delayed`,
+                        ulFrequency,
+                        modulation,
+                        dataRate,
+                        codingRate,
+                        gwCnt,
+                        received_in,
+                        classB,
+                        fPort
+                    )
+                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            $stmt= $this->pdo->prepare($sqlDataUpDto);
+            $stmt->execute(
+                [
+                    isset($message->id) ? $message->id : null,
+                    isset($message->endDevice) ? $message->endDevice->devEui : null,
+                    isset($message->endDevice) ? $message->endDevice->devAddr : null,
+                    isset($message->endDevice) ? $message->endDevice->cluster->id : null,
+                    isset($message->fCntDown) ? $message->fCntDown : null,
+                    isset($message->fCntUp) ? $message->fCntUp : null,
+                    isset($message->adr) ? ($message->adr === true ? 1 : 0): null,
+                    isset($message->confirmed) ? ($message->confirmed === true ? 1 : 0) : null,
+                    isset($message->encrypted) ? ($message->encrypted === true ? 1 : 0) : null,
+                    isset($message->payload) ? $message->payload : null,
+                    isset($message->encodingType) ? $message->encodingType : null,
+                    isset($message->recvTime) ? $message->recvTime : null,
+                    isset($message->gwRecvTime) ? $message->gwRecvTime : null,
+                    isset($message->delayed) ? ($message->delayed === true ? 1 : 0) : null,
+                    isset($message->ulFrequency) ? $message->ulFrequency : null,
+                    isset($message->modulation) ? $message->modulation : null,
+                    isset($message->dataRate) ? $message->dataRate : null,
+                    isset($message->codingRate) ? $message->codingRate : null,
+                    isset($message->gwCnt) ? $message->gwCnt : null,
+                    $receivedIn,
+
+                    isset($message->classB) ? ($message->classB === true ? 1 : 0) : null,
+                    isset($message->fPort) ? $message->fPort : null
+                ]
+            );
+
+            if (isset($message->gwInfo))
+            {
+                $idDataUpDto = $this->pdo->lastInsertId();
+        
+                foreach ($message->gwInfo as $gwInfo)
+                {
+                    $sqlGwInfo = "INSERT INTO ".$this->config->database.".gwInfo
+                            (
+                                gwEui,
+                                rfRegion,
+                                rssi,
+                                snr,
+                                latitude,
+                                longitude,
+                                channel,
+                                radioId,
+            
+                                DataUpDto_id
+                            )
+                            VALUES (?,?,?,?,?,?,?,?,?)";
+                    $stmt= $this->pdo->prepare($sqlGwInfo);
+                    $stmt->execute(
+                        [
+                            $gwInfo->gwEui,
+                            $gwInfo->rfRegion,
+                            $gwInfo->rssi,
+                            $gwInfo->snr,
+                            $gwInfo->latitude,
+                            $gwInfo->longitude,
+                            $gwInfo->channel,
+                            $gwInfo->radioId,
+                            $idDataUpDto
+                        ]
+                    );
+                }
+            }
+
+            $this->pdo->commit();
+            return true;
+        }
+        catch (\Exception $e)
+        {
+            $this->pdo->rollBack();
+            Logger::getInstance()->log('Error: ' . json_encode($e));
+            return false;
+        }
     }
-} 
+}

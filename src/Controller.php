@@ -8,21 +8,31 @@ class Controller implements MessageComponentInterface {
     protected $clients;
     private $persistence;
 
-    public function __construct() {
-        Logger::getInstance()->setOutputFile(__DIR__.'/../logs/websocket.log');
-        $this->persistence = new Persistence();
+    public function __construct($config) {
+
+        if (isset($config->timezone))
+        {
+            date_default_timezone_set($config->timezone);
+        }
+
+        Logger::getInstance()->setOutputFile(__DIR__."/../logs/".date('YmdHis')."_".$config->server->port."_websocket.log");
+
+        $this->persistence = new Persistence($config->mysql);
         $this->clients = new \SplObjectStorage;
     }
 
     public function onOpen(ConnectionInterface $conn) {
         $this->clients->attach($conn);
         Logger::getInstance()->log("New connection ({$conn->resourceId})");
+        Logger::getInstance()->log(json_encode($conn->httpRequest->getHeaders()));
     }
 
     public function onMessage(ConnectionInterface $from, $msg) {
-        $this->persistence->saveDataUpDto($msg);
-        Logger::getInstance()->log(sprintf('Connection %d sent message "%s"'
-            , $from->resourceId, $msg));
+        $t = microtime(true);
+        $micro = sprintf("%06d",($t - floor($t)) * 1000000);
+        $d = new \DateTime( date('Y-m-d H:i:s.'.$micro, $t) );
+        
+        $this->persistence->saveDataUpDto($msg, $d->format("Y-m-d H:i:s.u"));
     }
 
     public function onClose(ConnectionInterface $conn) {

@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "9906:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    command: '--default-authentication-plugin=mysql_native_password'
+    networks:
+      - app-network
+    cap_add:
+      - SYS_NICE    
+volumes:
+  dbdata:
+  
+networks:
+  app-network:
+    driver: bridge  
