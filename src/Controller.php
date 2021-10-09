@@ -7,17 +7,23 @@ use RatchetSync\Persistence;
 class Controller implements MessageComponentInterface {
     protected $clients;
     private $persistence;
+    private $config;
 
     public function __construct($config) {
+        $this->config = $config;
+        $this->init();
+    }
 
-        if (isset($config->timezone))
+    private function init()
+    {
+        if (isset($this->config->timezone))
         {
-            date_default_timezone_set($config->timezone);
+            date_default_timezone_set($this->config->timezone);
         }
 
-        Logger::getInstance()->setOutputFile(__DIR__."/../logs/".date('YmdHis')."_".$config->server->port."_websocket.log");
+        Logger::getInstance()->setOutputFile(__DIR__."/../logs/".date('YmdHis')."_".$this->config->server->port."_websocket.log");
 
-        $this->persistence = new Persistence($config->mysql);
+        $this->persistence = new Persistence($this->config->mysql);
         $this->clients = new \SplObjectStorage;
     }
 
@@ -41,6 +47,7 @@ class Controller implements MessageComponentInterface {
     }
 
     public function onError(ConnectionInterface $conn, \Exception $e) {
+        $this->init();
         Logger::getInstance()->log("An error has occurred: {$e->getMessage()}");
         $conn->close();
     }
