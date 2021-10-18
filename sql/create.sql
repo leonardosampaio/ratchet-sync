@@ -1,5 +1,9 @@
-CREATE DATABASE IF NOT EXISTS ratchet_sync;
-CREATE TABLE IF NOT EXISTS ratchet_sync.DataUpDto (
+CREATE DATABASE IF NOT EXISTS CHANGETHIS;
+CONNECT CHANGETHIS;
+
+CREATE USER IF NOT EXISTS 'cli_server'@'localhost' IDENTIFIED BY 'CHANGETHIS';
+
+CREATE TABLE IF NOT EXISTS DataUpDto (
 	id 			            MEDIUMINT AUTO_INCREMENT,
 
     message_id              CHAR(50),
@@ -29,7 +33,9 @@ CREATE TABLE IF NOT EXISTS ratchet_sync.DataUpDto (
 	PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS ratchet_sync.gwInfo (
+GRANT INSERT ON DataUpDto TO 'cli_server'@'localhost' WITH GRANT OPTION;
+
+CREATE TABLE IF NOT EXISTS gwInfo (
     id  	        MEDIUMINT AUTO_INCREMENT,
 
     gwEui           CHAR(50),
@@ -49,11 +55,8 @@ CREATE TABLE IF NOT EXISTS ratchet_sync.gwInfo (
         ON DELETE CASCADE
 );
 
-CREATE USER IF NOT EXISTS 'cli_server'@'localhost' IDENTIFIED BY 'CHANGETHIS';
-GRANT INSERT ON ratchet_sync.DataUpDto TO 'cli_server'@'localhost' WITH GRANT OPTION;
-GRANT INSERT ON ratchet_sync.gwInfo TO 'cli_server'@'localhost' WITH GRANT OPTION;
+GRANT INSERT ON gwInfo TO 'cli_server'@'localhost' WITH GRANT OPTION;
 
---para cada banco
 CREATE TABLE IF NOT EXISTS Water_Meters (
     id  	        MEDIUMINT AUTO_INCREMENT,
 
@@ -107,7 +110,6 @@ CREATE TABLE IF NOT EXISTS meter_alarms (
     PRIMARY KEY (id)
 );
 
-DROP TRIGGER WM_MR_Trigger;
 DELIMITER $$
 CREATE TRIGGER WM_MR_MA_Trigger AFTER INSERT ON DataUpDto
   FOR EACH ROW
