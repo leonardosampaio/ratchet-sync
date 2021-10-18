@@ -9,7 +9,7 @@ Open inbound connections to the socket ports with
     sudo yum install iptables-services
     sudo systemctl start iptables
     sudo systemctl enable iptables
-    sudo iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport PORT_NUMBER -j ACCEPT
+    sudo iptables -A INPUT -p tcp -m tcp --dport PORT_NUMBER -j ACCEPT
     sudo service iptables save
 # MySQL
 
