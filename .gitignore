@@ -6,3 +6,4 @@ vendor
 test
 *.log
 .vscode
+.history
