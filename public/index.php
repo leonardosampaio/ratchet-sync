@@ -164,10 +164,11 @@ $app->post('/login', function(Request $request, Response $response) use ($applic
 
     if (201 !== $result['httpCode'])
     {
+        $apiResponse = @json_decode($result['response']);
         return $response->withJson(
             [
                 'success' => false,
-                'errors'=>['unexpected response'],
+                'errors'=>[$apiResponse->message ?? 'unexpected response'],
                 'httpCode' => $result['httpCode'],
                 'response'=> json_decode($result['response'])
 
