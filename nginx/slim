@@ -1,0 +1,39 @@
+#configuracao para subpath
+#https://stackoverflow.com/a/42467562
+
+server {
+        listen 80;
+        server_name localhost;
+        root /var/www/html;
+        index index.php;
+
+location / {
+
+}
+
+location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_pass unix:/run/php/php7.4-fpm.sock;
+
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $request_filename;
+        fastcgi_param SCRIPT_NAME $fastcgi_script_name;
+}
+
+#ln -s /usr/share/ratchet-sync /var/www/html/createDataDown
+location ^~ /createDataDown {
+        alias /var/www/html/createDataDown/public;
+        index index.php;
+
+        if (!-e $request_filename) { rewrite ^ /createDataDown/index.php last; }
+
+        location ~ \.php$ {
+            if (!-f $request_filename) { return 404; }
+            fastcgi_pass unix:/run/php/php7.4-fpm.sock;
+
+            include fastcgi_params;
+            fastcgi_param SCRIPT_FILENAME $request_filename;
+            fastcgi_param SCRIPT_NAME $fastcgi_script_name;
+        }
+    }
+}
