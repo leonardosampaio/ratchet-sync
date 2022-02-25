@@ -4,7 +4,7 @@
         <script>
             $(document).ready(function(){
                 // debugger;
-                var conn = new WebSocket('ws://localhost:5732');
+                var conn = new WebSocket('ws://104.238.184.137:5732');
                 conn.onopen = function(e) {
                     console.log("Connection established!");
                     conn.send('{"TODO":"Hello World!"}');
