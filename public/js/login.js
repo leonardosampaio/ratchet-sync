@@ -14,7 +14,7 @@ const login = () => {
 
         if (response.success)
         {
-            window.location = window.location.origin + '/home';
+            window.location = window.location + 'home';
         }
         else {
             alert('Error: ' +
