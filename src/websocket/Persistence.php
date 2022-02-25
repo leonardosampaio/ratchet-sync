@@ -1,7 +1,8 @@
 <?php
 
-namespace RatchetSync;
-use RatchetSync\Logger;
+namespace websocket;
+
+use websocket\Logger;
 use PDO;
 
 class Persistence {
@@ -88,7 +89,7 @@ class Persistence {
                     )
                     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             $stmt= $this->pdo->prepare($sqlDataUpDto);
-            $stmt->execute(
+            $insertedDataUpDto = $stmt->execute(
                 [
                     isset($message->id) ? $message->id : null,
                     isset($message->endDevice) ? $message->endDevice->devEui : null,
@@ -116,6 +117,7 @@ class Persistence {
                 ]
             );
 
+            $insertedGwInfo = true;
             if (isset($message->gwInfo))
             {
                 $idDataUpDto = $this->pdo->lastInsertId();
@@ -137,7 +139,7 @@ class Persistence {
                             )
                             VALUES (?,?,?,?,?,?,?,?,?)";
                     $stmt= $this->pdo->prepare($sqlGwInfo);
-                    $stmt->execute(
+                    $insertedGwInfo = $stmt->execute(
                         [
                             $gwInfo->gwEui,
                             $gwInfo->rfRegion,
@@ -154,12 +156,12 @@ class Persistence {
             }
 
             $this->pdo->commit();
-            return true;
+            return $insertedDataUpDto && $insertedGwInfo;
         }
         catch (\Exception $e)
         {
             $this->pdo->rollBack();
-            Logger::getInstance()->log('Error: ' . json_encode($e));
+            Logger::getInstance()->log('Error: ' . (($json = json_encode($e)) ? $json : $e->getMessage()));
             return false;
         }
     }

@@ -1,0 +1,39 @@
+{
+    "lastName": "string",
+    "role": "string",
+    "avatar": "string",
+    "login": "string",
+    "enabled": true,
+    "firstName": "string",
+    "password": "string",
+    "validated": true,
+    "phone": "string",
+    "requestMaxRateDuration": 0,
+    "requestMaxRate": 0,
+    "links": [
+      {
+        "rel": "string",
+        "href": "string"
+      }
+    ],
+    "id": 0,
+    "email": "string",
+    "customer": {
+      "maxUsers": 0,
+      "maxEndDevices": 0,
+      "maxGateways": 0,
+      "geolocationExpirationDate": 0,
+      "name": "string",
+      "logo": "string",
+      "links": [
+        {
+          "rel": "string",
+          "href": "string"
+        }
+      ],
+      "geolocationAuthorized": false,
+      "id": 0,
+      "billing": false
+    },
+    "expirationDate": 0
+  }

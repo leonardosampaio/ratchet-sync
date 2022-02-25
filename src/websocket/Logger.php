@@ -1,5 +1,7 @@
 <?php
-namespace RatchetSync;
+
+namespace websocket;
+
 class Logger {
     
     private static $instance;

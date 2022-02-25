@@ -1,8 +1,11 @@
 <?php
-namespace RatchetSync;
+
+namespace websocket;
+
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
-use RatchetSync\Persistence;
+use websocket\Persistence;
+use websocket\Logger;
 
 class Controller implements MessageComponentInterface {
     protected $clients;
@@ -21,7 +24,7 @@ class Controller implements MessageComponentInterface {
             date_default_timezone_set($this->config->timezone);
         }
 
-        Logger::getInstance()->setOutputFile(__DIR__."/../logs/".date('YmdHis')."_".$this->config->server->port."_websocket.log");
+        Logger::getInstance()->setOutputFile(__DIR__."/../../logs/".date('YmdHis')."_".$this->config->server->port."_websocket.log");
 
         $this->persistence = new Persistence($this->config->mysql);
         $this->clients = new \SplObjectStorage;

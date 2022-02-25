@@ -1,0 +1,19 @@
+<html>
+    <body>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+        <script>
+            $(document).ready(function(){
+                // debugger;
+                var conn = new WebSocket('ws://localhost:3535');
+                conn.onopen = function(e) {
+                    console.log("Connection established!");
+                    conn.send('{"TODO":"Hello World!"}');
+                };
+
+                conn.onmessage = function(e) {
+                    console.log("Response:" + e.data);
+                };
+            });
+        </script>
+    </body>
+</html>

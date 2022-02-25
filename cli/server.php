@@ -1,10 +1,11 @@
 <?php
-use RatchetSync\Controller;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use websocket\Controller;
 use Ratchet\Server\IoServer;
 use Ratchet\Http\HttpServer;
 use Ratchet\WebSocket\WsServer;
-
-require dirname(__DIR__) . '/vendor/autoload.php';
 
 if (!isset($argv[1]) || empty($argv[1]))
 {

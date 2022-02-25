@@ -1,10 +1,14 @@
 {
     "autoload": {
-        "psr-4": {
-            "RatchetSync\\": "src"
+        "psr-0": {
+            "app": "src/",
+            "websocket": "src/"
         }
     },
     "require": {
-        "cboden/ratchet": "^0.4"
+        "cboden/ratchet": "^0.4",
+        "slim/http": "^1.2",
+        "slim/psr7": "^1.4",
+        "slim/slim": "^4.8"
     }
 }

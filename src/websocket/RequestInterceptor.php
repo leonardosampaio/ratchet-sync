@@ -1,5 +1,7 @@
 <?php
-namespace RatchetSync;
+
+namespace websocket;
+
 use \Ratchet\Http\HttpServerInterface;
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;

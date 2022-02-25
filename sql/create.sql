@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS DataUpDto (
 	PRIMARY KEY (id)
 );
 
-GRANT INSERT ON DataUpDto TO 'cli_server'@'localhost' WITH GRANT OPTION;
+GRANT INSERT ON DataUpDto TO 'cli_server'@'%' WITH GRANT OPTION;
 
 CREATE TABLE IF NOT EXISTS gwInfo (
     id  	        MEDIUMINT AUTO_INCREMENT,
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS gwInfo (
         ON DELETE CASCADE
 );
 
-GRANT INSERT ON gwInfo TO 'cli_server'@'localhost' WITH GRANT OPTION;
+GRANT INSERT ON gwInfo TO 'cli_server'@'%' WITH GRANT OPTION;
 
 CREATE TABLE IF NOT EXISTS Water_Meters (
     id  	        MEDIUMINT AUTO_INCREMENT,
@@ -67,6 +67,7 @@ CREATE TABLE IF NOT EXISTS Water_Meters (
     PRIMARY KEY (id)
 );
 
+GRANT SELECT ON Water_Meters TO 'cli_server'@'%' WITH GRANT OPTION;
 
 CREATE TABLE IF NOT EXISTS meter_readings (
     id  	        MEDIUMINT AUTO_INCREMENT,

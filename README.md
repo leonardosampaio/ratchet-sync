@@ -24,3 +24,9 @@ Create database(s), tables and user(s) with the DDL template in `sql/create.sql`
 3. Run server with
 
     php cli/server.php path_to/configuration_file.json
+
+# Run as service
+
+1.
+2.
+3. To autostart TODO
