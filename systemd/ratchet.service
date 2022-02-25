@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Type=simple
 User=root
-ExecStart=/usr/share/ratchet-sync/systemd/ratchet.sh
+ExecStart=/bin/bash /usr/share/ratchet-sync/systemd/ratchet.sh
 
 [Install]
 WantedBy=multi-user.target
