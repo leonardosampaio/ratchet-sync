@@ -5,10 +5,8 @@ const login = () => {
             "Accept": "application/json"
         },
         body: JSON.stringify({
-            'role': document.getElementById('role').value,
             'login': document.getElementById('login').value,
-            'password': document.getElementById('password').value,
-            'email': document.getElementById('email').value
+            'password': document.getElementById('password').value
         })
     })
     .then(response => response.json())

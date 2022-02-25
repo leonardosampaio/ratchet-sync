@@ -143,10 +143,8 @@ $app->post('/login', function(Request $request, Response $response) use ($applic
     $rawPayload = file_get_contents('php://input');
     $objPayload = json_decode($rawPayload);
 
-    if (empty($objPayload->role) ||
-        empty($objPayload->login) ||
-        empty($objPayload->password) ||
-        empty($objPayload->email))
+    if (empty($objPayload->login) ||
+        empty($objPayload->password))
     {
         return $response->withJson(
             ['errors'=>[
