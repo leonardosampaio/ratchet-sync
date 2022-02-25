@@ -1,0 +1,11 @@
+[Unit]
+Description=Ratchet server
+After=network.target
+
+[Service]
+Type=forking
+User=root
+ExecStart=/usr/share/ratchet-sync/systemd/ratchet.sh
+
+[Install]
+WantedBy=multi-user.target
