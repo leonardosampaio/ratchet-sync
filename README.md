@@ -11,11 +11,14 @@ Open inbound connections to the socket ports with
     sudo systemctl enable iptables
     sudo iptables -A INPUT -p tcp -m tcp --dport PORT_NUMBER -j ACCEPT
     sudo service iptables save
+
+ufw: 
+    sudo ufw allow 5732
 # MySQL
 
 Create database(s), tables and user(s) with the DDL template in `sql/create.sql`
 
-    mysql -u root -p < sql/create.sql
+    mysql -uroot -p < sql/create.sql
 
 ## Configuration
 
@@ -25,8 +28,9 @@ Create database(s), tables and user(s) with the DDL template in `sql/create.sql`
 
     php cli/server.php path_to/configuration_file.json
 
-# Run as service
+# To run as service
 
-1.
-2.
-3. To autostart TODO
+1. ln -s /usr/share/ratchet-sync/systemd/ratchet.service /etc/systemd/system
+2. systemctl daemon-reload
+3. systemctl enable ratchet
+4. systemctl start ratchet
