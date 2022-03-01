@@ -138,7 +138,7 @@ CREATE TABLE IF NOT EXISTS createDataDownTrigger (
 	PRIMARY KEY (id)
 );
 
-GRANT INSERT, UPDATE ON createDataDownTrigger TO 'cli_server'@'%' WITH GRANT OPTION;
+GRANT SELECT, UPDATE ON createDataDownTrigger TO 'cli_server'@'%' WITH GRANT OPTION;
 
 --select cast((CONV(battery,16,10)-1)/253 as DECIMAL(4,3)) from meter_readings
 /*SHOW INDEX FROM DataUpDto;
