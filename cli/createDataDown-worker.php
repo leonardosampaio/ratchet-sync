@@ -30,7 +30,7 @@ foreach($triggers as $trigger)
         file_get_contents(__DIR__.'/../schema/createDataDown_test.json'));
 
     $objPayload->fPort =    $trigger->fPort;
-    $objPayload->devEui =   $trigger->devEui;
+    $objPayload->endDevice->devEui =   $trigger->devEui;
     $objPayload->payload =  $trigger->payload;
     
     $result = (new CurlWrapper())->post(
