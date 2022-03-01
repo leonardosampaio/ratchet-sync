@@ -52,5 +52,6 @@ foreach($triggers as $trigger)
     }
     else {
         echo 'Failed to create data down for trigger ' . $trigger->id . PHP_EOL;
+        echo 'Response: ' . $result['response'] . PHP_EOL;
     }
 }
