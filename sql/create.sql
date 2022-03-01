@@ -130,9 +130,11 @@ ALTER TABLE Water_Meters ADD INDEX (endDevice_devEui);
 CREATE TABLE IF NOT EXISTS createDataDownTrigger (
     id  	        MEDIUMINT AUTO_INCREMENT,
 
-    endDevice_devEui        CHAR(50),
-    endDevice_devAddr       CHAR(50),
-    processed               BOOLEAN,
+    devEui          CHAR(50),
+    fPort           BIGINT,
+    payload         CHAR(200),
+    
+    processed       BOOLEAN,
     due_date        DATETIME(6),
     
 	PRIMARY KEY (id)

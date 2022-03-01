@@ -26,17 +26,12 @@ if (empty($triggers))
 
 foreach($triggers as $trigger)
 {
-    //TODO payload
-    $objPayload = [
-        "fPort" => 0,
-        "confirmed" => true,
-        "payload" => "string",
-        "contentType" => "string",
-        "endDevice" => [
-            "devAddr" => $trigger->endDevice_devAddr,
-            "devEui" => $trigger->endDevice_devEui
-        ]
-    ];
+    $objPayload = json_decode(
+        file_get_contents(__DIR__.'/../schema/createDataDown_test.json'));
+
+    $objPayload->fPort =    $trigger->fPort;
+    $objPayload->devEui =   $trigger->devEui;
+    $objPayload->payload =  $trigger->payload;
     
     $result = (new CurlWrapper())->post(
         $applicationConfig->baseUrl . $url,
