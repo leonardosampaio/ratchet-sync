@@ -127,6 +127,19 @@ $$
 ALTER TABLE DataUpDto ADD INDEX (endDevice_devEui);
 ALTER TABLE Water_Meters ADD INDEX (endDevice_devEui);
 
+CREATE TABLE IF NOT EXISTS createDataDownTrigger (
+    id  	        MEDIUMINT AUTO_INCREMENT,
+
+    endDevice_devEui        CHAR(50),
+    endDevice_devAddr       CHAR(50),
+    processed               BOOLEAN,
+    due_date        DATETIME(6),
+    
+	PRIMARY KEY (id)
+);
+
+GRANT INSERT, UPDATE ON createDataDownTrigger TO 'cli_server'@'%' WITH GRANT OPTION;
+
 --select cast((CONV(battery,16,10)-1)/253 as DECIMAL(4,3)) from meter_readings
 /*SHOW INDEX FROM DataUpDto;
 SHOW INDEX FROM Water_Meters;

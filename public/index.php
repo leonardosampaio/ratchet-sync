@@ -177,6 +177,10 @@ $app->post('/login', function(Request $request, Response $response) use ($applic
 
     $_SESSION['user'] = json_decode($result['response']);
 
+    (new Configuration())->updateToken(
+        $_SESSION['user']->token,
+        $_SESSION['user']->expiredDate);
+
     return $response->withJson(
         [
         'success' => true,

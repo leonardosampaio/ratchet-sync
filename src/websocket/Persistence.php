@@ -29,7 +29,7 @@ class Persistence {
         try {
              $this->pdo = new PDO($dsn, $this->config->user, $this->config->password, $options);
         } catch (\Exception $e) {
-            Logger::getInstance()->log('PDO error: ' . json_encode($e));
+            Logger::getInstance()->log('PDO error: ' . json_encode($e, JSON_PRETTY_PRINT));
         }
     }
 
@@ -54,7 +54,7 @@ class Persistence {
                         '[Persistence::saveDataUpDto] Invalid PDO instance obtained, ignoring insert of ' . 
                         json_encode($msgJsonStr));
                     Logger::getInstance()->log(
-                        '[Persistence::saveDataUpDto] Trying again in '.$this->nextTryInSeconds.' seconds');    
+                        '[Persistence::saveDataUpDto] Retrying in '.$this->nextTryInSeconds.' seconds');    
                 }
             }
     
@@ -161,7 +161,7 @@ class Persistence {
         catch (\Exception $e)
         {
             $this->pdo->rollBack();
-            Logger::getInstance()->log('Error: ' . (($json = json_encode($e)) ? $json : $e->getMessage()));
+            Logger::getInstance()->log('Error: ' . (($json = json_encode($e, JSON_PRETTY_PRINT)) ? $json : $e->getMessage()));
             return false;
         }
     }

@@ -23,4 +23,21 @@ class Configuration {
     {
         return $this->getJsonFromConfigFile(__DIR__.'/../../configuration/app.json');
     }
+
+    public function updateToken($token, $expiredDate)
+    {
+        $applicationConfig = $this->getApplication();
+
+        if (isset($applicationConfig->error))
+        {
+            return $applicationConfig->error;
+        }
+
+        $applicationConfig->token = [
+            'value' => $token,
+            'expiredDate' => $expiredDate
+        ];
+
+        file_put_contents(__DIR__.'/../../configuration/app.json', json_encode($applicationConfig, JSON_PRETTY_PRINT));
+    }
 }
