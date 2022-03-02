@@ -30,7 +30,7 @@ foreach($triggers as $trigger)
         file_get_contents(__DIR__.'/../schema/createDataDown_complete.json'));
 
     $objPayload->fPort =                $trigger->fPort;
-    $objPayload->confirmed =            $trigger->confirmed;
+    $objPayload->confirmed =            $trigger->confirmed == 1;
     $objPayload->endDevice->devEui =    $trigger->devEui;
     $objPayload->payload =              $trigger->payload;
     $objPayload->contentType =          $trigger->contentType;
