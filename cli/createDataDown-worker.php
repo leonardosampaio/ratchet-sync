@@ -35,10 +35,12 @@ foreach($triggers as $trigger)
     $objPayload->payload =              $trigger->payload;
     $objPayload->contentType =          $trigger->contentType;
     
+    $request = json_encode($objPayload);
+
     $result = (new CurlWrapper())->post(
         $applicationConfig->baseUrl . $url,
         [],
-        json_encode($objPayload),
+        $request,
         [
             'Content-Type: application/json',
             'Accept: application/json',
@@ -47,6 +49,8 @@ foreach($triggers as $trigger)
         $applicationConfig->port ?? 443
     );
 
+    echo 'Request: ' . $request . PHP_EOL;
+
     if (201 === $result['httpCode'])
     {
         $persistence->setDataDownTriggerProcessed($trigger->id);
@@ -54,6 +58,7 @@ foreach($triggers as $trigger)
     }
     else {
         echo 'Failed to create data down for trigger ' . $trigger->id . PHP_EOL;
-        echo 'Response: ' . $result['response'] . PHP_EOL;
     }
+    
+    echo 'Response: ' . $result['response'] . PHP_EOL;
 }
