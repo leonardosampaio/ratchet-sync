@@ -177,7 +177,9 @@ $app->post('/login', function(Request $request, Response $response) use ($applic
 
     $_SESSION['user'] = json_decode($result['response']);
 
-    (new Configuration())->updateToken(
+    (new Configuration())->updateCredentials(
+        $objPayload->login,
+        $objPayload->password,
         $_SESSION['user']->token,
         $_SESSION['user']->expiredDate);
 

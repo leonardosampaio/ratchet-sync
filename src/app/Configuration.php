@@ -24,7 +24,7 @@ class Configuration {
         return $this->getJsonFromConfigFile(__DIR__.'/../../configuration/app.json');
     }
 
-    public function updateToken($token, $expiredDate)
+    public function updateCredentials($login, $password, $token, $expiredDate)
     {
         $applicationConfig = $this->getApplication();
 
@@ -37,6 +37,9 @@ class Configuration {
             'value' => $token,
             'expiredDate' => $expiredDate
         ];
+
+        $applicationConfig->login = $login;
+        $applicationConfig->password = $password;
 
         file_put_contents(__DIR__.'/../../configuration/app.json', json_encode($applicationConfig, JSON_PRETTY_PRINT));
     }
